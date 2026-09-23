@@ -6,6 +6,8 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -145,7 +147,44 @@ class User extends Authenticatable
     }
 
     /* ---------------------------------------------------------------------
-     |  Relasi domain (umkmProfile, orders, articles) ditambahkan pada FASE 3
-     |  bersamaan dengan pembuatan model-model terkait.
+     |  Relasi domain (Rancangan §3.1)
      --------------------------------------------------------------------- */
+
+    /**
+     * Profil UMKM milik user (bila role = umkm).
+     *
+     * @return HasOne<UmkmProfile, $this>
+     */
+    public function umkmProfile(): HasOne
+    {
+        return $this->hasOne(UmkmProfile::class);
+    }
+
+    /**
+     * @return HasMany<Order, $this>
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Artikel yang ditulis user (literasi UMKM).
+     *
+     * @return HasMany<Article, $this>
+     */
+    public function articles(): HasMany
+    {
+        return $this->hasMany(Article::class);
+    }
+
+    /**
+     * Keranjang milik user login.
+     *
+     * @return HasMany<Cart, $this>
+     */
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class);
+    }
 }

@@ -452,6 +452,26 @@ Ekstensi `zip`/`gd`/`intl` aktif, Composer tersedia, MySQL Laragon port 3306, DB
 | `umkm@ewedu.test` | umkm |
 | `pembeli@ewedu.test` | customer |
 
-### FASE 3 — Database & Domain Layer ⏳ berikutnya
-15 migration (§1.3), seluruh model + relasi + factory + seeder, `php artisan storage:link`, unit test Haversine.
+### FASE 3 — Database & Domain Layer ✅
+- 14 migration domain (§1.3) + `notifications` (skeleton Laravel 12): `settings`, `categories`, `umkm_profiles`, `article_categories`, `articles`, `products`, `product_images`, `carts`, `cart_items`, `delivery_points`, `orders`, `order_items`, `payments`, `order_status_histories`.
+- Kebijakan FK: `cascadeOnDelete` untuk data anak yang tidak bermakna tanpa induk (order → items/payments/histories, cart → items, product → images) dan `nullOnDelete` untuk referensi historis (`orders.user_id`, `order_items.product_id`, `order_items.umkm_profile_id`, `payments.verified_by`) supaya snapshot pesanan tetap utuh.
+- 14 model domain: konstanta status/enum (`Order::TRANSITIONS`, `STATUS_LABELS`, `PAYMENT_*`), relasi, scope (`active`, `featured`, `published`, `search`, `freePoints`, `custom`, `ordered`, `awaitingVerification`, `verified`), accessor (`price_formatted`, `discount_percent`, `total_formatted`, `shipping_fee_formatted`, `items_count`, `subtotal` keranjang) dan helper (`finalPrice()`, `hasDiscount()`, `isAvailable()`, `canTransitionTo()`, `canBeCancelled()`, `statusLabel()`, `whatsappUrl()`, `coordinates()`, `thumbnailUrl()`, `generateOrderNumber()` → `EWD-YYYYMMDD-XXXX`).
+- Soft delete: `umkm_profiles`, `articles`, `products`, `delivery_points`, `orders` (+ `users` dari FASE 2). Relasi domain pada `User` (`umkmProfile`, `orders`, `articles`) kini aktif.
+- 14 factory beserta state siap pakai: `admin()/umkm()/inactive()` (user), `custom()/inactive()` (titik kirim), `discounted()/outOfStock()/featured()` (produk), `unverified()/unpublished()` (UMKM), `verified()/rejected()/qris()` (pembayaran), `guest()/qris()/paid()/completed()/cancelled()/customDelivery()/pickupAt()` (pesanan).
+- 7 seeder idempoten (dijalankan ulang aman, `updateOrCreate` + `withTrashed()`): `SettingSeeder` (12 baris), `CategorySeeder` (6), `ArticleCategorySeeder` (4), `DeliveryPointSeeder` (4 titik gratis + 1 master rule alamat kustom), `UmkmProfileSeeder` (4 mitra terverifikasi), `ProductSeeder` (8 produk), `ArticleSeeder` (6 artikel terbit, 1 di antaranya cerita profil `kopi-tuguran`). `DatabaseSeeder` memanggil semuanya sesuai urutan FK.
+- `app/Services/DistanceService.php`: Haversine stateless (`distanceKm`, `distanceBetweenPoints`, `distanceFromOrigin` memakai `settings.campus_origin_lat/lng`, `isWithinRadius`, `exceedsMaxDistance`) sebagai dasar kalkulasi ongkir FASE 6.
+- `thumbnail`/`logo`/`cover` **sengaja `null`** (UI memakai placeholder) — upload nyata baru di FASE 8.
+- Test: `tests/Unit/DistanceServiceTest.php` (8 kasus) + `tests/Feature/DomainRelationTest.php` (9) + `tests/Feature/DomainSeederTest.php` (4) → `php artisan test` **63 test lulus (229 assertion)**. `public/storage` sudah tertaut, `php artisan db:seed` diverifikasi idempoten di MySQL `ewedu`, dan `php artisan view:cache` sukses.
+- ⚠️ **Deviasi testing**: Pest **tidak** terpasang (repo memakai PHPUnit 11.5 dari skeleton Laravel 12) → seluruh test ditulis bergaya kelas PHPUnit (`test_snake_case`). Keputusan ini ditinjau ulang pada FASE 9 (lihat §5 poin 11).
+
+**Akun mitra seeder tambahan (password: `password`)**
+
+| Email | UMKM | Slug |
+|---|---|---|
+| `batik.srikandi@ewedu.test` | Batik Srikandi Magelang | `batik-srikandi-magelang` |
+| `kriya.getas@ewedu.test` | Kriya Bambu Getas | `kriya-bambu-getas` |
+| `dapur.sari@ewedu.test` | Dapur Bunda Sari | `dapur-bunda-sari` |
+
+### FASE 4 — Halaman Publik & Literasi UMKM ⏳ berikutnya
+Landing page, daftar & detail artikel, daftar & detail profil UMKM, halaman error, meta SEO dasar.
 

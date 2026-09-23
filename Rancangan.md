@@ -420,3 +420,38 @@ Katalog dengan filter kategori/UMKM/harga + search + sorting + pagination; detai
 | Node / npm | v22.11.0 / 10.9.0 |
 | Git | 2.46.0 â€” repo diinisialisasi di root proyek |
 | Catatan | Laragon MySQL juga memuat DB lain milik user (`greenhouse_lokal`) â€” **jangan** dijalankan `migrate:fresh` ke DB tersebut |
+
+---
+
+## 7. CATATAN EKSEKUSI (log pembangunan)
+
+### FASE 0 — Setup Environment ✅
+Ekstensi `zip`/`gd`/`intl` aktif, Composer tersedia, MySQL Laragon port 3306, DB `ewedu` (utf8mb4_unicode_ci), `git init` + commit awal `Rancangan.md`.
+
+### FASE 1 — Bootstrap Laravel + Tailwind ✅
+- Laravel **12.69.2**, Breeze **2.4.2** (stack Blade), Alpine.js aktif.
+- Tailwind yang dipakai Breeze adalah **v3.4** → `tailwind.config.js` dibaca otomatis, direktif `@config` (v4) **tidak** diperlukan.
+- Palet brand (`primary/accent/background/text`) digabung ke config Breeze tanpa menghapus font Figtree & `@tailwindcss/forms`.
+- `npm run build` sukses; `php artisan migrate` awal sukses.
+
+### FASE 2 — Auth, Role & Layout Dasar ✅
+- `users` ditambah: `role` enum(`customer`,`umkm`,`admin`) index, `phone`, `address`, `avatar`, `is_active`, `deleted_at` (softDeletes).
+- `app/Http/Middleware/RoleMiddleware.php` + alias `role` di `bootstrap/app.php`. Bentuk yang didukung: `role:admin`, `role:admin,umkm`, `role:admin|umkm`. Tamu → redirect login; role salah / akun nonaktif → 403.
+- Model `User`: konstanta `ROLE_*`, scope `role()/active()/admins()/umkmOwners()`, helper `isAdmin()`, `isUmkm()`, `isCustomer()`, `hasRole()`, `isActive()`, `roleLabel()`, `roleBadgeClass()`.
+- Layout: `layouts/public.blade.php` (di-refactor memakai komponen), `layouts/admin.blade.php`, `layouts/umkm.blade.php`.
+- Komponen Blade: `x-navbar`, `x-footer`, `x-alert` (flash session + error validasi otomatis), `x-card`, `x-empty-state`, `x-sidebar-link`.
+- `UserSeeder` (idempoten) + state `admin()/umkm()/inactive()` pada `UserFactory`; `DatabaseSeeder` memanggil `UserSeeder`.
+- Test: `tests/Feature/RoleAccessTest.php` (8 kasus) + `tests/Unit/UserRoleHelperTest.php` (4 kasus) → `php artisan test` **37 test lulus**. `tests/Feature/ProfileTest.php` disesuaikan ke `assertSoftDeleted` karena `users` memakai soft delete.
+- Relasi domain pada `User` (`umkmProfile`, `orders`, `articles`) sengaja ditunda ke FASE 3 mengikuti pembuatan model terkait.
+
+**Kredensial seeder (password: `password`)**
+
+| Email | Role |
+|---|---|
+| `admin@ewedu.test` | admin |
+| `umkm@ewedu.test` | umkm |
+| `pembeli@ewedu.test` | customer |
+
+### FASE 3 — Database & Domain Layer ⏳ berikutnya
+15 migration (§1.3), seluruh model + relasi + factory + seeder, `php artisan storage:link`, unit test Haversine.
+

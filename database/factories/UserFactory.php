@@ -29,6 +29,9 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'role' => User::ROLE_CUSTOMER,
+            'phone' => '08'.fake()->numerify('##########'),
+            'is_active' => true,
             'remember_token' => Str::random(10),
         ];
     }
@@ -40,6 +43,36 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Akun dengan role admin (akses Panel Admin).
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => User::ROLE_ADMIN,
+        ]);
+    }
+
+    /**
+     * Akun pemilik UMKM (akses Panel Mitra UMKM).
+     */
+    public function umkm(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => User::ROLE_UMKM,
+        ]);
+    }
+
+    /**
+     * Akun yang diblokir (is_active = false) — RoleMiddleware akan menolak aksesnya.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
         ]);
     }
 }

@@ -103,6 +103,24 @@ class UmkmProfile extends Model
         return $query->whereNotNull('published_at')->where('published_at', '<=', now());
     }
 
+    /**
+     * Pencarian mitra: nama usaha, nama pemilik, atau deskripsi (FASE 4).
+     */
+    public function scopeSearch(Builder $query, ?string $term): Builder
+    {
+        $term = trim((string) $term);
+
+        if ($term === '') {
+            return $query;
+        }
+
+        return $query->where(function (Builder $q) use ($term): void {
+            $q->where('business_name', 'like', "%{$term}%")
+                ->orWhere('owner_name', 'like', "%{$term}%")
+                ->orWhere('description', 'like', "%{$term}%");
+        });
+    }
+
     /* ----------------------------- Helpers ------------------------------ */
 
     public function isVerified(): bool

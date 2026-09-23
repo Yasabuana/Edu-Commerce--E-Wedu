@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\ArticleFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -115,6 +116,24 @@ class Article extends Model
         return $query->whereHas('category', fn (Builder $q) => $q->where('slug', $slug));
     }
 
+    /**
+     * Pencarian literasi: judul, ringkasan, atau isi artikel (FASE 4).
+     */
+    public function scopeSearch(Builder $query, ?string $term): Builder
+    {
+        $term = trim((string) $term);
+
+        if ($term === '') {
+            return $query;
+        }
+
+        return $query->where(function (Builder $q) use ($term): void {
+            $q->where('title', 'like', "%{$term}%")
+                ->orWhere('excerpt', 'like', "%{$term}%")
+                ->orWhere('body', 'like', "%{$term}%");
+        });
+    }
+
     /* ----------------------------- Helpers ------------------------------ */
 
     public function isPublished(): bool
@@ -122,6 +141,27 @@ class Article extends Model
         return $this->status === self::STATUS_PUBLISHED
             && $this->published_at !== null
             && $this->published_at->isPast();
+    }
+
+    /**
+     * Tanggal terbit bahasa Indonesia, mis. "23 September 2026".
+     *
+     * Locale Carbon di-set eksplisit dari `app.locale` karena Laravel tidak
+     * menyinkronkan locale Carbon secara otomatis.
+     */
+    protected function publishedAtFormatted(): Attribute
+    {
+        return Attribute::get(
+            fn (): ?string => $this->published_at?->locale(config('app.locale'))->translatedFormat('d F Y'),
+        );
+    }
+
+    /**
+     * Estimasi waktu baca (menit) — asumsi 200 kata per menit.
+     */
+    public function readingTimeMinutes(): int
+    {
+        return max(1, (int) ceil(str_word_count(strip_tags((string) $this->body)) / 200));
     }
 
     public function coverImageUrl(): ?string

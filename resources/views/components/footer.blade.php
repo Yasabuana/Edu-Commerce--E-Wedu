@@ -16,10 +16,10 @@
             <p class="text-sm font-semibold uppercase tracking-wider text-brand-accent">Jelajahi</p>
             <ul class="mt-3 space-y-2 text-sm">
                 <li><a href="{{ url('/katalog') }}" class="transition hover:text-white">Katalog Produk</a></li>
-                <li><a href="{{ url('/umkm') }}" class="transition hover:text-white">Profil UMKM</a></li>
-                <li><a href="{{ url('/artikel') }}" class="transition hover:text-white">Artikel Literasi</a></li>
+                <li><a href="{{ route('umkm.index') }}" class="transition hover:text-white">Profil UMKM</a></li>
+                <li><a href="{{ route('articles.index') }}" class="transition hover:text-white">Artikel Literasi</a></li>
                 <li><a href="{{ url('/lacak') }}" class="transition hover:text-white">Lacak Pesanan</a></li>
-                <li><a href="{{ url('/tentang') }}" class="transition hover:text-white">Tentang E-Wedu</a></li>
+                <li><a href="{{ route('about') }}" class="transition hover:text-white">Tentang E-Wedu</a></li>
             </ul>
         </div>
 

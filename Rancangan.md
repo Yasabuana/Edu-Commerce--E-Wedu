@@ -472,6 +472,18 @@ Ekstensi `zip`/`gd`/`intl` aktif, Composer tersedia, MySQL Laragon port 3306, DB
 | `kriya.getas@ewedu.test` | Kriya Bambu Getas | `kriya-bambu-getas` |
 | `dapur.sari@ewedu.test` | Dapur Bunda Sari | `dapur-bunda-sari` |
 
-### FASE 4 — Halaman Publik & Literasi UMKM ⏳ berikutnya
-Landing page, daftar & detail artikel, daftar & detail profil UMKM, halaman error, meta SEO dasar.
+### FASE 4 — Halaman Publik & Literasi UMKM ✅
+- Routes publik (§2.1): `home` (`/`), `about` (`/tentang`), `umkm.index` (`/umkm`), `umkm.show` (`/umkm/{slug}`), `articles.index` (`/artikel`), `articles.show` (`/artikel/{slug}`). `/` tidak lagi memakai `welcome` → `resources/views/welcome.blade.php` (skeleton) dihapus karena sudah tidak dirujuk siapa pun.
+- Controller: `HomeController@index` (produk unggulan, artikel terbaru, mitra terverifikasi, kategori, statistik hero, `whatsapp_admin` dari `settings`), `ArticleController@index/show`, `UmkmProfileController@index/show`, `PageController@about`. Semua query memakai scope domain FASE 3 (`active`, `featured`, `inStock`, `published`, `verified`, `search`, `categorySlug`, `active/ordered` kategori) + eager loading agar bebas N+1; halaman detail memakai `abort_unless(..., 404)` sehingga draft, artikel terjadwal, profil belum terverifikasi, dan profil belum terbit dianggap tidak ada.
+- Helper model: `Article::scopeSearch` (judul/ringkasan/isi), `scopeCategorySlug`, `readingTimeMinutes()` (200 kata/menit, minimal 1), accessor `published_at_formatted` (locale `id`, mis. `05 Januari 2026`); `UmkmProfile::scopeSearch` (nama usaha/nama pemilik/deskripsi).
+- View: `home.blade.php` + partial `home/{hero,sorotan,kategori,produk-unggulan,mitra,literasi,cta}`, `articles/{index,show}` + partial `articles/partials/{filter,sidebar,share,aside}`, `umkm/{index,show}` + partial `umkm/partials/{filter,hero,story,products,aside}`, `about.blade.php`, dan `errors/{404,500}.blade.php` — semuanya memakai `layouts.public`.
+- Komponen baru: `x-section-heading`, `x-page-header`, `x-product-card`, `x-article-card`, `x-umkm-card`, `x-whatsapp-button` (nomor dinormalisasi ke `62...`, tidak merender apa pun bila `settings.whatsapp_admin` kosong). `x-navbar`/`x-footer` kini memakai `route()` untuk menu publik (`home`, `umkm.index`, `articles.index`, `about`).
+- Alpine.js: menu mobile, slider "Sorotan Produk" (auto-putar 6 detik), filter kategori produk sisi klien, panel filter yang bisa dilipat, accordion FAQ, dan tombol "salin tautan" artikel (Clipboard API).
+- Meta SEO dasar: `@section('title')` + `@section('meta_description')` pada setiap halaman publik.
+- Filter daftar: `/artikel?q=&kategori=`, `/umkm?q=&kategori=&urut=terbaru|produk` — input dinormalkan (`trim` + dipotong 100 karakter) dan `urut` tak dikenal otomatis kembali ke `terbaru`. `product-card` masih menautkan ke `/katalog/{slug}` (URL nyata menyusul di FASE 5).
+- Test: `tests/Feature/PublicPageTest.php` (5), `ArticlePageTest.php` (8), `UmkmPageTest.php` (8), `ArticleModelTest.php` (4) + `tests/Unit/ArticleHelperTest.php` (3) → `php artisan test` **90 test lulus (347 assertion)**. `tests/Feature/ExampleTest.php` bawaan Breeze dihapus karena `/` kini menyentuh database (butuh `RefreshDatabase` + seeder).
+- Verifikasi manual: `/`, `/tentang`, `/artikel`, `/artikel/{slug}`, `/umkm`, `/umkm/{slug}`, `/umkm?kategori=Kuliner`, `/artikel?q=kopi` semuanya `200` pada MySQL `ewedu` (data hasil seeder FASE 3); slug tidak dikenal → `404`.
+- ⚠️ **Gotcha Blade**: direktif yang menempel langsung pada kata (mis. `UMKM@if (...)`) **tidak** dikompilasi Blade karena butuh batas kata, sehingga muncul `syntax error, unexpected token "endif" (View: ...)`. Semua direktif kini ditulis dipisah spasi/baris.
+- ⚠️ **Toolchain (ditunda ke FASE 9)**: `npm run build` dan `npm run dev` gagal di Node v22.11.0 karena Vite 7.3.6 mensyaratkan Node ≥ 20.19 / ≥ 22.12. Bundle CSS FASE 4 sementara dibangun lewat Tailwind CLI (`npx tailwindcss -i resources/css/app.css -o public/build/assets/app-*.css --minify`) sehingga aset publik tetap sinkron dengan view; perbaikan permanen = upgrade Node atau pin `vite@^6`.
+
 

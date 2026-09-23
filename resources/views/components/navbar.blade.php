@@ -14,11 +14,11 @@
         </a>
 
         <ul class="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
-            <li><a href="{{ url('/') }}" class="transition hover:text-brand-primary">Beranda</a></li>
+            <li><a href="{{ route('home') }}" class="transition hover:text-brand-primary">Beranda</a></li>
             <li><a href="{{ url('/katalog') }}" class="transition hover:text-brand-primary">Katalog</a></li>
-            <li><a href="{{ url('/umkm') }}" class="transition hover:text-brand-primary">Profil UMKM</a></li>
-            <li><a href="{{ url('/artikel') }}" class="transition hover:text-brand-primary">Literasi</a></li>
-            <li><a href="{{ url('/lacak') }}" class="transition hover:text-brand-primary">Lacak Pesanan</a></li>
+            <li><a href="{{ route('umkm.index') }}" class="transition hover:text-brand-primary">Profil UMKM</a></li>
+            <li><a href="{{ route('articles.index') }}" class="transition hover:text-brand-primary">Literasi</a></li>
+            <li><a href="{{ route('about') }}" class="transition hover:text-brand-primary">Tentang</a></li>
         </ul>
 
         <div class="hidden items-center gap-3 md:flex">
@@ -61,10 +61,11 @@
     {{-- Menu mobile --}}
     <div id="menu-mobile" x-show="bukaMenu" x-cloak class="border-t border-slate-200 bg-white md:hidden">
         <ul class="space-y-1 px-4 py-3 text-sm font-medium text-slate-700">
-            <li><a href="{{ url('/') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Beranda</a></li>
+            <li><a href="{{ route('home') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Beranda</a></li>
             <li><a href="{{ url('/katalog') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Katalog</a></li>
-            <li><a href="{{ url('/umkm') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Profil UMKM</a></li>
-            <li><a href="{{ url('/artikel') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Literasi</a></li>
+            <li><a href="{{ route('umkm.index') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Profil UMKM</a></li>
+            <li><a href="{{ route('articles.index') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Literasi</a></li>
+            <li><a href="{{ route('about') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Tentang</a></li>
             <li><a href="{{ url('/lacak') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Lacak Pesanan</a></li>
             <li><a href="{{ url('/keranjang') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Keranjang</a></li>
 

@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Alpine.js: sembunyikan elemen ber-atribut x-cloak sebelum Alpine siap,
+   agar tidak ada kedipan konten (mis. menu mobile navbar & panel filter). */
+[x-cloak] {
+    display: none !important;
+}
+

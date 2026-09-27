@@ -15,8 +15,7 @@
     $toko = $product->umkmProfile?->business_name ?? 'Mitra UMKM';
     $satuan = $product->unit ?: 'pcs';
     $habis = $product->stock <= 0;
-    // FASE 5 mengganti tautan ini menjadi route('products.show').
-    $tautan = url('/katalog/'.$product->slug);
+    $tautan = route('products.show', $product);
 @endphp
 
 <article class="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-brand-primary/40 hover:shadow-md">

@@ -20,6 +20,15 @@ class Cart extends Model
     use HasFactory;
 
     /**
+     * Kunci session penyimpan id session keranjang guest.
+     *
+     * Diperlukan karena `SessionGuard::updateSession()` memindahkan (migrate)
+     * session id **sebelum** event `Login` dipancarkan, sehingga id lama harus
+     * diingat agar keranjang guest bisa digabung ke keranjang user (FASE 5).
+     */
+    public const GUEST_SESSION_KEY = 'e_wedu.guest_cart_session';
+
+    /**
      * @var list<string>
      */
     protected $fillable = [
@@ -76,7 +85,52 @@ class Cart extends Model
             throw new \RuntimeException('Keranjang guest memerlukan session aktif.');
         }
 
+        // Jejak session guest dipakai `CartService::mergeGuestCart()` saat login.
+        session()->put(self::GUEST_SESSION_KEY, $sessionId);
+
         return static::query()->firstOrCreate(['session_id' => $sessionId]);
+    }
+
+    /**
+     * Cart yang sedang aktif **tanpa membuat baris baru** (null bila belum ada).
+     *
+     * Dipakai halaman keranjang publik & badge navbar: membuka halaman tidak
+     * boleh meninggalkan baris cart kosong di database.
+     */
+    public static function currentCart(): ?self
+    {
+        $userId = auth()->id();
+
+        if ($userId !== null) {
+            return static::query()->forUser($userId)->first();
+        }
+
+        if (! app()->bound('session')) {
+            return null;
+        }
+
+        $sessionId = (string) session()->getId();
+
+        if ($sessionId === '') {
+            return null;
+        }
+
+        return static::query()->forSession($sessionId)->first();
+    }
+
+    /**
+     * Total qty keranjang berjalan untuk badge navbar (0 bila belum ada cart).
+     *
+     * Aman dipanggil pada setiap render halaman: read-only, tidak membuat cart,
+     * dan tidak melempar error bila tabel belum siap (mis. halaman error 500).
+     */
+    public static function currentItemCount(): int
+    {
+        try {
+            return (int) static::currentCart()?->total_qty;
+        } catch (\Throwable) {
+            return 0;
+        }
     }
 
     /**

@@ -21,7 +21,7 @@
 
             {{-- CTA utama: katalog (FASE 5) & literasi --}}
             <div class="mt-7 flex flex-wrap items-center gap-3">
-                <a href="{{ url('/katalog') }}"
+                <a href="{{ route('products.index') }}"
                    class="inline-flex items-center gap-2 rounded-lg bg-brand-accent px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-accent/30 transition hover:bg-orange-600">
                     Jelajahi Katalog
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true">

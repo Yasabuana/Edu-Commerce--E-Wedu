@@ -75,4 +75,12 @@ class CartItem extends Model
     {
         return $this->product !== null && $this->product->stock >= $this->qty;
     }
+
+    /**
+     * Baris ini milik cart tertentu? (guard kepemilikan pada update/hapus item)
+     */
+    public function isOwnedBy(?Cart $cart): bool
+    {
+        return $cart !== null && (int) $this->cart_id === (int) $cart->getKey();
+    }
 }

@@ -2,7 +2,7 @@
 <section>
     <x-section-heading eyebrow="Katalog mitra" title="Produk dari {{ $umkmProfile->business_name }}"
                        subtitle="Harga dan stok diperbarui langsung oleh mitra. Pembelian dilakukan lewat halaman katalog."
-                       action-label="Lihat katalog" action-href="{{ url('/katalog') }}" />
+                       action-label="Lihat katalog" action-href="{{ route('products.index') }}" />
 
     @if ($products->isNotEmpty())
         <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

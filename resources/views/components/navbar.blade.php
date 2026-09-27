@@ -15,16 +15,23 @@
 
         <ul class="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
             <li><a href="{{ route('home') }}" class="transition hover:text-brand-primary">Beranda</a></li>
-            <li><a href="{{ url('/katalog') }}" class="transition hover:text-brand-primary">Katalog</a></li>
+            <li><a href="{{ route('products.index') }}" class="transition hover:text-brand-primary">Katalog</a></li>
             <li><a href="{{ route('umkm.index') }}" class="transition hover:text-brand-primary">Profil UMKM</a></li>
             <li><a href="{{ route('articles.index') }}" class="transition hover:text-brand-primary">Literasi</a></li>
             <li><a href="{{ route('about') }}" class="transition hover:text-brand-primary">Tentang</a></li>
         </ul>
 
         <div class="hidden items-center gap-3 md:flex">
-            <a href="{{ url('/keranjang') }}"
-               class="rounded-md border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-brand-primary hover:text-brand-primary">
+            <a href="{{ route('cart.index') }}"
+               class="relative inline-flex items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-brand-primary hover:text-brand-primary">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.5l.75 3m0 0l1.5 7.5h9l1.5-7.5H4.5zM9 18.75a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0zm8.25 0a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0z" />
+                </svg>
                 Keranjang
+                @if (($cartItemCount ?? 0) > 0)
+                    <span class="inline-grid h-5 min-w-5 place-items-center rounded-full bg-brand-accent px-1 text-[11px] font-bold text-white"
+                          aria-label="Jumlah item di keranjang">{{ $cartItemCount > 9 ? '9+' : $cartItemCount }}</span>
+                @endif
             </a>
 
             @auth
@@ -62,12 +69,20 @@
     <div id="menu-mobile" x-show="bukaMenu" x-cloak class="border-t border-slate-200 bg-white md:hidden">
         <ul class="space-y-1 px-4 py-3 text-sm font-medium text-slate-700">
             <li><a href="{{ route('home') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Beranda</a></li>
-            <li><a href="{{ url('/katalog') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Katalog</a></li>
+            <li><a href="{{ route('products.index') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Katalog</a></li>
             <li><a href="{{ route('umkm.index') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Profil UMKM</a></li>
             <li><a href="{{ route('articles.index') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Literasi</a></li>
             <li><a href="{{ route('about') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Tentang</a></li>
             <li><a href="{{ url('/lacak') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Lacak Pesanan</a></li>
-            <li><a href="{{ url('/keranjang') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Keranjang</a></li>
+            <li>
+                <a href="{{ route('cart.index') }}"
+                   class="flex items-center justify-between gap-2 rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">
+                    Keranjang
+                    @if (($cartItemCount ?? 0) > 0)
+                        <span class="inline-grid h-5 min-w-5 place-items-center rounded-full bg-brand-accent px-1 text-[11px] font-bold text-white">{{ $cartItemCount > 9 ? '9+' : $cartItemCount }}</span>
+                    @endif
+                </a>
+            </li>
 
             @auth
                 @if (auth()->user()->isAdmin())

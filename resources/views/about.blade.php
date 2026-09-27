@@ -209,7 +209,7 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3">
-                    <a href="{{ url('/katalog') }}"
+                    <a href="{{ route('products.index') }}"
                        class="rounded-lg bg-brand-accent px-5 py-3 text-sm font-semibold text-white transition hover:bg-orange-600">
                         Jelajahi Katalog
                     </a>

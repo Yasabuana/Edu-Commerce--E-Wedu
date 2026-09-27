@@ -25,7 +25,7 @@
                class="rounded-lg bg-brand-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-900">
                 Kembali ke Beranda
             </a>
-            <a href="{{ url('/katalog') }}"
+            <a href="{{ route('products.index') }}"
                class="rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-brand-primary hover:text-brand-primary">
                 Jelajahi Katalog
             </a>

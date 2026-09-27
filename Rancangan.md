@@ -381,7 +381,7 @@ Katalog dengan filter kategori/UMKM/harga + search + sorting + pagination; detai
 - CRUD Produk, Kategori, UMKM (+verifikasi), Artikel, Titik Pengiriman, Customer, Pengaturan (upload QRIS, tarif/km), Laporan penjualan.
 
 ### FASE 9 â€” QA, Polish & Testing (2 hari)
-- **Feature test (Pest)**: add-to-cart, merge guest cart, checkout stok habis, titik pengiriman invalid, transisi status ilegal -> 403, upload bukti bukan gambar -> 422, customer tidak bisa akses admin.
+- **Feature test (PHPUnit)**: add-to-cart, merge guest cart, checkout stok habis, titik pengiriman invalid, transisi status ilegal -> 403, upload bukti bukan gambar -> 422, customer tidak bisa akses admin.
 - **Unit test**: `DistanceService`, `ShippingCalculator` (radius gratis, max jarak, pembulatan).
 - `php artisan test`, `vendor/bin/pint`, cek responsive, `php artisan optimize`.
 
@@ -404,7 +404,7 @@ Katalog dengan filter kategori/UMKM/harga + search + sorting + pagination; detai
 8. **Rate limit**: `throttle:30,1` pada hitung ongkir, `throttle:5,1` pada upload bukti.
 9. **Konfigurasi tarif di tabel `settings`**, bukan config/env, agar admin bisa ubah tanpa deploy ulang.
 10. **Notifikasi** pakai driver queue `database` (fase 2); `sync` aman untuk demo MVP.
-11. **Testing** memakai Pest (bawaan Laravel 11/12), jangan menambah konfigurasi PHPUnit terpisah.
+11. **Testing** memakai **PHPUnit 11.5** gaya kelas (`tests/Unit`, `tests/Feature`, nama method `test_snake_case`) sesuai skeleton Laravel 12 — **tanpa** menambahkan Pest atau konfigurasi PHPUnit terpisah. Keputusan ini bersifat final sejak FASE 5 (§7).
 
 ---
 
@@ -462,7 +462,7 @@ Ekstensi `zip`/`gd`/`intl` aktif, Composer tersedia, MySQL Laragon port 3306, DB
 - `app/Services/DistanceService.php`: Haversine stateless (`distanceKm`, `distanceBetweenPoints`, `distanceFromOrigin` memakai `settings.campus_origin_lat/lng`, `isWithinRadius`, `exceedsMaxDistance`) sebagai dasar kalkulasi ongkir FASE 6.
 - `thumbnail`/`logo`/`cover` **sengaja `null`** (UI memakai placeholder) — upload nyata baru di FASE 8.
 - Test: `tests/Unit/DistanceServiceTest.php` (8 kasus) + `tests/Feature/DomainRelationTest.php` (9) + `tests/Feature/DomainSeederTest.php` (4) → `php artisan test` **63 test lulus (229 assertion)**. `public/storage` sudah tertaut, `php artisan db:seed` diverifikasi idempoten di MySQL `ewedu`, dan `php artisan view:cache` sukses.
-- ⚠️ **Deviasi testing**: Pest **tidak** terpasang (repo memakai PHPUnit 11.5 dari skeleton Laravel 12) → seluruh test ditulis bergaya kelas PHPUnit (`test_snake_case`). Keputusan ini ditinjau ulang pada FASE 9 (lihat §5 poin 11).
+- ⚠️ **Deviasi testing**: Pest **tidak** terpasang (repo memakai PHPUnit 11.5 dari skeleton Laravel 12) → seluruh test ditulis bergaya kelas PHPUnit (`test_snake_case`). **Final sejak FASE 5**: tetap PHPUnit sampai FASE 10, tidak ada migrasi ke Pest (lihat §5 poin 11).
 
 **Akun mitra seeder tambahan (password: `password`)**
 
@@ -485,5 +485,19 @@ Ekstensi `zip`/`gd`/`intl` aktif, Composer tersedia, MySQL Laragon port 3306, DB
 - Verifikasi manual: `/`, `/tentang`, `/artikel`, `/artikel/{slug}`, `/umkm`, `/umkm/{slug}`, `/umkm?kategori=Kuliner`, `/artikel?q=kopi` semuanya `200` pada MySQL `ewedu` (data hasil seeder FASE 3); slug tidak dikenal → `404`.
 - ⚠️ **Gotcha Blade**: direktif yang menempel langsung pada kata (mis. `UMKM@if (...)`) **tidak** dikompilasi Blade karena butuh batas kata, sehingga muncul `syntax error, unexpected token "endif" (View: ...)`. Semua direktif kini ditulis dipisah spasi/baris.
 - ⚠️ **Toolchain (ditunda ke FASE 9)**: `npm run build` dan `npm run dev` gagal di Node v22.11.0 karena Vite 7.3.6 mensyaratkan Node ≥ 20.19 / ≥ 22.12. Bundle CSS FASE 4 sementara dibangun lewat Tailwind CLI (`npx tailwindcss -i resources/css/app.css -o public/build/assets/app-*.css --minify`) sehingga aset publik tetap sinkron dengan view; perbaikan permanen = upgrade Node atau pin `vite@^6`.
+
+### FASE 5 — Katalog Produk & Keranjang ✅
+- Route baru (§2.1): `products.index` (`/katalog`), `products.show` (`/katalog/{slug}`), `cart.index` (`/keranjang`), `cart.store` (`POST /keranjang`), `cart.update` (`PATCH /keranjang/{cartItem}`), `cart.destroy` (`DELETE /keranjang/{cartItem}`). Semua tautan hardcoded `url('/katalog')`/`url('/keranjang')` pada navbar, footer, error 404, halaman tentang, partial home (hero/kategori/produk-unggulan/sorotan), partial UMKM, dan `x-product-card` sudah diganti `route(...)`; `Product::getRouteKeyName()` = `slug`.
+- `ProductController@index`: pencarian `q` (nama produk/deskripsi/nama usaha), filter `kategori` & `umkm` (slug), rentang `min`/`max` (harga efektif), `urut` (`terbaru|termurah|termahal|terlaris|rating`), paginasi 12/halaman + `withQueryString()`; input dinormalkan (`trim`, potong 100 karakter) dan `urut` tak dikenal jatuh ke `terbaru`. `show`: menambah `views`, menampilkan galeri, info penjual, form tambah keranjang, dan 4 produk serupa kategori.
+- Visibilitas publik disatukan: `Product::scopePubliclyVisible()` + `Product::isPubliclyVisible()` (produk aktif **dan** UMKM terverifikasi **dan** sudah terbit) dipakai katalog, detail, rekomendasi, dan `cart.store` → selain itu `404`.
+- Helper/scope baru `Product`: `scopeCategorySlug`, `scopeUmkmSlug`, `scopePriceBetween` (`COALESCE(discount_price, price)`; min/max terbalik ditukar; nilai non-numerik diabaikan), `scopeSorted`, `sortOptions()`, `normalizeSort()`, `galleryUrls()` (thumbnail dulu lalu foto galeri tanpa duplikat).
+- `app/Services/CartService.php` sebagai satu-satunya sumber logika keranjang: `add` (qty digabung, snapshot harga efektif, dibatasi stok), `updateQty`, `remove`, `clear`, `mergeGuestCart` — semuanya `DB::transaction` + `lockForUpdate()` (anti-oversell) dan gagal dengan `ValidationException` berpesan Bahasa Indonesia; produk nonaktif/terhapus/stok habis dilewati saat merge.
+- `Cart`: `currentCart()` read-only (tidak membuat baris saat halaman dibuka), `currentItemCount()` untuk badge navbar (aman walau tabel belum siap), `GUEST_SESSION_KEY`. `CartItem::isOwnedBy()` → baris keranjang milik orang lain dijawab **404** (bukan 403), konsisten dengan konvensi FASE 4.
+- Merge keranjang guest: `App\Listeners\MergeGuestCart` didaftarkan pada event `Login` di `AppServiceProvider`; badge navbar lewat View Composer `components.navbar` (`$cartItemCount`). **Temuan penting**: `SessionGuard::updateSession()` memanggil `session()->migrate()` **sebelum** event `Login`, sehingga id session guest sudah berubah saat listener berjalan → id session guest dijejak di session (`Cart::GUEST_SESSION_KEY`) ketika baris cart guest dibuat dan diambil sekali pakai (`pull`) saat merge.
+- Form request baru: `StoreCartItemRequest` (`product_id` wajib ada & belum dihapus, `qty` 1..99) dan `UpdateCartItemRequest` (`qty` 1..99). `cart.store` membalas JSON (`message`, `qty`, `count`, `subtotal`) bila `expectsJson()`, selain itu redirect + flash `success`.
+- View: `products/index` + partial `products/partials/filter` (filter aktif berupa chip + reset semua), `products/show` + partial `products/partials/{gallery,buy-box,seller,related}`, `cart/index` + partial `cart/partials/{item,summary}` (dikelompokkan per UMKM, tombol checkout masih nonaktif sampai FASE 7), dan komponen baru `x-qty-stepper` (Alpine.js, opsional `auto-submit`).
+- Test: `tests/Feature/CatalogPageTest.php` (13), `CartServiceTest.php` (11), `CartTest.php` (10), `MergeGuestCartTest.php` (4) + `tests/Unit/ProductSortHelperTest.php` (4) → `php artisan test` **132 test lulus (557 assertion)**, 0 test dihapus.
+- Verifikasi: `php artisan view:clear` + `view:cache` (137 view) sukses, `php artisan route:list` memuat 6 rute baru, bundle CSS dibangun ulang lewat Tailwind CLI (`public/build/assets/app-zPH139La.css`) dan kelas utilitas baru (`min-w-5`, `inline-grid`, `place-items-center`, `aspect-[4/3]`, `lg:sticky`, `sm:min-w-[7rem]`) terverifikasi ada di bundel.
+- ⚠️ **Gotcha test HTTP**: test client Laravel **tidak** otomatis membawa cookie antar request (session id berubah tiap request) → alur guest diuji dengan mengirim cookie `config('session.cookie')` berisi `session_id` cart guest (`withCookie(...)`), lihat `CartTest::gunakanSessionGuest()` dan `MergeGuestCartTest::loginDenganSessionGuest()`.
 
 

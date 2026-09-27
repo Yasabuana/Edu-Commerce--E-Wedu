@@ -39,7 +39,7 @@
                     @endforeach
                 </div>
 
-                <a href="{{ url('/katalog') }}" class="text-xs font-semibold text-white/80 transition hover:text-white">
+                <a href="{{ route('products.index') }}" class="text-xs font-semibold text-white/80 transition hover:text-white">
                     Lihat katalog &rarr;
                 </a>
             </div>

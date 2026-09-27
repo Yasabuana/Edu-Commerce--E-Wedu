@@ -5,7 +5,7 @@
 <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8" x-data="{ kategori: 'semua' }">
     <x-section-heading eyebrow="Kurasi mingguan" title="Produk Unggulan"
                        subtitle="Produk terlaris pilihan dari mitra UMKM Magelang yang stoknya siap dikirim."
-                       action-label="Lihat katalog lengkap" action-href="{{ url('/katalog') }}" />
+                       action-label="Lihat katalog lengkap" action-href="{{ route('products.index') }}" />
 
     @if ($featuredProducts->isNotEmpty())
         <div class="mt-6 flex flex-wrap gap-2">

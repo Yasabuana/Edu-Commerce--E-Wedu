@@ -59,6 +59,8 @@ class OrderFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'payment_method' => Order::PAYMENT_METHOD_QRIS,
+            'payment_status' => Order::PAYMENT_UNPAID,
+            'status' => Order::STATUS_PENDING,
         ]);
     }
 

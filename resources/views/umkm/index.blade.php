@@ -9,7 +9,15 @@
                    :breadcrumbs="[
                        ['label' => 'Beranda', 'url' => route('home')],
                        ['label' => 'Mitra UMKM'],
-                   ]" />
+                   ]">
+        <a href="{{ route('umkm.register') }}"
+           class="inline-flex items-center gap-2 rounded-lg bg-brand-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Daftar Mitra UMKM
+        </a>
+    </x-page-header>
 
     <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         @include('umkm.partials.filter')

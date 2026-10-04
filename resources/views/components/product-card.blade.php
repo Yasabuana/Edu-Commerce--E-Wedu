@@ -81,5 +81,23 @@
                 &middot; {{ number_format((int) $product->weight_gram) }} gram
             </p>
         </div>
+
+        {{-- Tombol Tambah ke Keranjang (FASE 6 — langsung dari card) --}}
+        @unless ($habis)
+            <div class="border-t border-slate-100 px-4 py-3">
+                <form action="{{ route('cart.store') }}" method="POST" class="flex items-center justify-between gap-2">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <input type="hidden" name="qty" value="1">
+                    <button type="submit"
+                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand-accent px-3 py-2 text-sm font-semibold text-white transition hover:bg-orange-600">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.5l.75 3m0 0l1.5 7.5h9l1.5-7.5H4.5zM9 18.75a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0zm8.25 0a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0z" />
+                        </svg>
+                        Tambah ke Keranjang
+                    </button>
+                </form>
+            </div>
+        @endunless
     </div>
 </article>

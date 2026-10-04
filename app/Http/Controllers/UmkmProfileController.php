@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\UmkmProfile;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 /**
  * Direktori mitra UMKM + profil literasi (Rancangan §2.1).
@@ -99,5 +102,60 @@ class UmkmProfileController extends Controller
             'products' => $products,
             'articles' => $articles,
         ]);
+    }
+
+    /**
+     * Tampilkan formulir pendaftaran mitra UMKM.
+     */
+    public function registerForm(): View
+    {
+        return view('umkm.register');
+    }
+
+    /**
+     * Proses pendaftaran mitra UMKM.
+     */
+    public function registerStore(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'business_name' => ['required', 'string', 'max:255'],
+            'owner_name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'phone' => ['required', 'string', 'max:20'],
+            'category_label' => ['required', 'string', 'max:100'],
+            'address' => ['required', 'string', 'max:500'],
+            'description' => ['required', 'string', 'max:2000'],
+        ]);
+
+        DB::transaction(function () use ($validated): void {
+            $user = User::create([
+                'name' => $validated['owner_name'],
+                'email' => $validated['email'],
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'role' => User::ROLE_UMKM,
+                'phone' => $validated['phone'],
+                'address' => $validated['address'],
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]);
+
+            UmkmProfile::create([
+                'user_id' => $user->id,
+                'business_name' => $validated['business_name'],
+                'slug' => str($validated['business_name'])->slug()->value(),
+                'owner_name' => $validated['owner_name'],
+                'category_label' => $validated['category_label'],
+                'description' => $validated['description'],
+                'phone' => $validated['phone'],
+                'whatsapp' => $validated['phone'],
+                'address' => $validated['address'],
+                'is_verified' => false,
+                'instagram' => '',
+            ]);
+        });
+
+        return redirect()
+            ->route('umkm.index')
+            ->with('success', 'Pendaftaran berhasil dikirim. Tim kami akan memverifikasi data Anda dalam 1x24 jam. Silakan cek email untuk informasi lebih lanjut.');
     }
 }

@@ -4,7 +4,7 @@
 @section('meta_description', 'Kumpulan panduan praktis pemasaran digital, pembukuan, pengemasan, dan cerita mitra UMKM Magelang untuk pelaku usaha kecil.')
 
 @section('content')
-    <x-page-header eyebrow="Literasi UMKM" title="Artikel Literasi &amp; Cerita Mitra"
+    <x-page-header eyebrow="Literasi UMKM" title="Artikel Literasi dan Cerita Mitra"
                    subtitle="Panduan praktis dan pengalaman nyata mitra UMKM Magelang — bebas dibaca siapa saja, tanpa biaya."
                    :breadcrumbs="[
                        ['label' => 'Beranda', 'url' => route('home')],

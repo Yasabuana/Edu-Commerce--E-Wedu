@@ -46,6 +46,15 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Redirect berdasarkan role: customer (default) ke beranda, admin/umkm ke dashboard masing-masing
+        if ($user->isAdmin()) {
+            return redirect('/admin');
+        }
+
+        if ($user->isUmkm()) {
+            return redirect('/umkm-panel');
+        }
+
+        return redirect()->route('home');
     }
 }

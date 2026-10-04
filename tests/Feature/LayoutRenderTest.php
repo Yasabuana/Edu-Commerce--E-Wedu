@@ -29,7 +29,7 @@ class LayoutRenderTest extends TestCase
             ->assertOk()
             ->assertSee('Navigasi utama', false)
             ->assertSee('Titik Pengiriman')
-            ->assertSee('Kampus Tuguran')
+            ->assertSee('Kampus Untidar')
             ->assertSee('Pesanan berhasil dibuat.')
             ->assertSee('role="alert"', false);
     }

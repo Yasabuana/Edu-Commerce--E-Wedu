@@ -41,6 +41,10 @@
                         Panel Admin
                     </a>
                 @endif
+                <a href="{{ route('orders.index') }}"
+                   class="rounded-md bg-brand-primary px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-900">
+                    Pesanan Saya
+                </a>
                 <a href="{{ route('dashboard') }}"
                    class="rounded-md bg-brand-primary px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-900">
                     Dashboard
@@ -88,6 +92,7 @@
                 @if (auth()->user()->isAdmin())
                     <li><a href="{{ url('/admin') }}" class="block rounded px-2 py-2 font-semibold text-brand-primary">Panel Admin</a></li>
                 @endif
+                <li><a href="{{ route('orders.index') }}" class="block rounded px-2 py-2 font-semibold text-brand-primary">Pesanan Saya</a></li>
                 <li><a href="{{ route('dashboard') }}" class="block rounded px-2 py-2 font-semibold text-brand-primary">Dashboard</a></li>
             @else
                 <li><a href="{{ route('login') }}" class="block rounded px-2 py-2 hover:bg-slate-50 hover:text-brand-primary">Masuk</a></li>

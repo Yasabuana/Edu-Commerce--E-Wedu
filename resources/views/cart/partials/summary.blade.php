@@ -33,10 +33,10 @@
         harga — total akhir dikunci saat checkout.
     </p>
 
-    <button type="button" disabled title="Checkout dibuka pada FASE 7"
-            class="mt-4 w-full cursor-not-allowed rounded-lg bg-slate-300 px-4 py-3 text-sm font-semibold text-white">
-        Lanjut ke checkout (segera hadir)
-    </button>
+    <a href="{{ route('checkout.index') }}"
+       class="mt-4 block w-full rounded-lg bg-brand-accent px-4 py-3 text-sm font-semibold text-white text-center transition hover:bg-orange-600">
+        Lanjut ke checkout
+    </a>
 
     <a href="{{ route('products.index') }}"
        class="mt-2 block text-center text-sm font-semibold text-brand-primary transition hover:text-brand-accent">

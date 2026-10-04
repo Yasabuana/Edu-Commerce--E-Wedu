@@ -28,7 +28,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+            return redirect()->intended('/admin');
+        }
+
+        if ($user->isUmkm()) {
+            return redirect()->intended('/umkm-panel');
+        }
+
+        return redirect()->intended(route('home'));
     }
 
     /**

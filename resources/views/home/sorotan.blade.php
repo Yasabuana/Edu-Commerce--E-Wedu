@@ -11,7 +11,11 @@
             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-brand-accent">Sorotan Produk</p>
 
             @foreach ($sorotan as $index => $produk)
-                <article x-show="aktif === {{ $index }}" x-transition x-cloak class="mt-4">
+                <article x-show="aktif === {{ $index }}"
+                         x-transition:enter="transition ease-out duration-500"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-cloak class="mt-4">
                     <div class="flex items-start gap-4">
                         <span class="grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-white/15 text-xl font-black">
                             {{ mb_strtoupper(mb_substr($produk->name, 0, 1)) }}

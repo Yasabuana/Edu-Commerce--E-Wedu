@@ -27,7 +27,7 @@ class MergeGuestCartTest extends TestCase
 
         $this->withCookie(config('session.cookie'), $sessionId)
             ->post(route('login'), ['email' => $user->email, 'password' => 'password'])
-            ->assertRedirect(route('dashboard', absolute: false));
+            ->assertRedirect(route('home', absolute: false));
     }
 
     public function test_keranjang_guest_dipindahkan_ke_keranjang_user_setelah_login(): void
@@ -74,7 +74,7 @@ class MergeGuestCartTest extends TestCase
         $user = User::factory()->create();
 
         $this->post(route('login'), ['email' => $user->email, 'password' => 'password'])
-            ->assertRedirect(route('dashboard', absolute: false));
+            ->assertRedirect(route('home', absolute: false));
 
         $this->assertDatabaseCount('carts', 0);
         $this->assertDatabaseCount('cart_items', 0);

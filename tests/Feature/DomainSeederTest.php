@@ -27,9 +27,9 @@ class DomainSeederTest extends TestCase
     {
         $this->seed();
 
-        // Akun: 3 dari UserSeeder + 3 mitra UMKM tambahan dari UmkmProfileSeeder.
-        $this->assertSame(6, User::query()->count());
-        $this->assertSame(4, User::query()->where('role', User::ROLE_UMKM)->count());
+        // Akun: 3 dari UserSeeder + 4 mitra UMKM baru (umkm@ewedu.test dipakai ulang).
+        $this->assertSame(7, User::query()->count());
+        $this->assertSame(5, User::query()->where('role', User::ROLE_UMKM)->count());
         $this->assertSame(1, User::query()->where('role', User::ROLE_ADMIN)->count());
 
         // Pengaturan (settings) — tarif logistik & identitas situs.
@@ -45,7 +45,7 @@ class DomainSeederTest extends TestCase
         $this->assertSame(4, DeliveryPoint::query()->active()->freePoints()->count());
         $this->assertSame(1, DeliveryPoint::query()->custom()->count());
         $this->assertSame(
-            ['TGR-01', 'UMC-02', 'BKM-03', 'SNT-04'],
+            ['KMP-01', 'ALN-02', 'RND-03', 'ART-04'],
             DeliveryPoint::query()->active()->freePoints()->ordered()->pluck('code')->all(),
         );
 
@@ -54,18 +54,18 @@ class DomainSeederTest extends TestCase
         $this->assertSame(4, ArticleCategory::query()->count());
 
         // Mitra UMKM terverifikasi dan sudah terbit.
-        $this->assertSame(4, UmkmProfile::query()->count());
-        $this->assertSame(4, UmkmProfile::query()->verified()->published()->count());
+        $this->assertSame(5, UmkmProfile::query()->count());
+        $this->assertSame(5, UmkmProfile::query()->verified()->published()->count());
 
-        // Katalog: 8 produk aktif, masing-masing punya mitra & kategori.
-        $this->assertSame(8, Product::query()->count());
-        $this->assertSame(8, Product::query()->active()->count());
-        $this->assertSame(4, Product::query()->featured()->count());
+        // Katalog: 14 produk aktif (fokus F&B), masing-masing punya mitra & kategori.
+        $this->assertSame(14, Product::query()->count());
+        $this->assertSame(14, Product::query()->active()->count());
+        $this->assertSame(5, Product::query()->featured()->count());
         $this->assertSame(0, Product::query()->whereNull('umkm_profile_id')->count());
         $this->assertSame(0, Product::query()->whereNull('category_id')->count());
         $this->assertSame(0, Product::query()->where('stock', '<=', 0)->count());
         // Thumbnail baru diisi admin pada FASE 8 — katalog memakai placeholder.
-        $this->assertSame(8, Product::query()->whereNull('thumbnail')->count());
+        $this->assertSame(14, Product::query()->whereNull('thumbnail')->count());
 
         // Literasi: 6 artikel terbit, 2 di antaranya unggulan.
         $this->assertSame(6, Article::query()->count());
@@ -84,7 +84,7 @@ class DomainSeederTest extends TestCase
     {
         $this->seed();
 
-        // Origin settings (Kampus Tuguran) -> UMKM Center Magelang ≈ 2,04 km.
+        // Origin settings (Kampus Untidar) -> titik Magelang Selatan ≈ 2,04 km.
         $distance = app(DistanceService::class)->distanceFromOrigin(-7.4793, 110.2204);
 
         $this->assertEqualsWithDelta(2.04, $distance, 0.05);
@@ -94,7 +94,7 @@ class DomainSeederTest extends TestCase
     {
         $this->seed();
 
-        $user = User::query()->where('email', 'batik.srikandi@ewedu.test')->firstOrFail();
+        $user = User::query()->where('email', 'angkringan.untidar@ewedu.test')->firstOrFail();
 
         $this->assertSame(User::ROLE_UMKM, $user->role);
         $this->assertTrue(Hash::check('password', $user->password));

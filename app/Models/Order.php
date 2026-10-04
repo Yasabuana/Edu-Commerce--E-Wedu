@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Order extends Model
 {
@@ -113,6 +114,7 @@ class Order extends Model
         'total',
         'payment_method',
         'payment_status',
+        'payment_receipt',
         'status',
         'customer_note',
         'admin_note',
@@ -342,5 +344,25 @@ class Order extends Model
     protected function itemsCount(): Attribute
     {
         return Attribute::get(fn (): int => (int) $this->items->sum('qty'));
+    }
+
+    /**
+     * URL publik bukti pembayaran QRIS, atau null jika belum diunggah.
+     */
+    protected function receiptUrl(): Attribute
+    {
+        return Attribute::get(fn (): ?string => $this->payment_receipt
+            ? Storage::disk('public')->url($this->payment_receipt)
+            : null
+        );
+    }
+
+    /**
+     * Apakah pesanan ini menggunakan QRIS dan belum dibayar?
+     */
+    public function needsPayment(): bool
+    {
+        return $this->payment_method === self::PAYMENT_METHOD_QRIS
+            && $this->payment_status === self::PAYMENT_UNPAID;
     }
 }

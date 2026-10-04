@@ -26,13 +26,13 @@
         <div>
             <p class="text-sm font-semibold uppercase tracking-wider text-brand-accent">Titik Pengiriman</p>
             <ul class="mt-3 space-y-2 text-sm text-slate-300">
-                <li>Kampus Tuguran</li>
-                <li>UMKM Center Magelang</li>
-                <li>Balai Kota Magelang</li>
-                <li>Sentra UMKM</li>
+                <li>Kampus Untidar</li>
+                <li>Alun-Alun Magelang</li>
+                <li>Rindam Magelang</li>
+                <li>Artos Magelang</li>
             </ul>
             <p class="mt-3 text-xs text-slate-400">
-                Titik di atas gratis ongkir. Alamat lain dihitung otomatis dari Kampus Tuguran.
+                Titik di atas gratis ongkir. Alamat lain dihitung otomatis dari Kampus Untidar.
             </p>
         </div>
     </div>

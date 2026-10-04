@@ -26,7 +26,7 @@ class SettingSeeder extends Seeder
             'shipping_max_distance_km' => ['25', Setting::TYPE_INTEGER, 'shipping'],
 
             // Pembayaran & kontak admin
-            'whatsapp_admin' => ['6281234567890', Setting::TYPE_STRING, 'site'],
+            'whatsapp_admin' => ['6288225435927', Setting::TYPE_STRING, 'site'],
             // Diisi admin lewat menu Pengaturan (upload QRIS statis) pada FASE 8.
             'qris_image' => ['', Setting::TYPE_STRING, 'payment'],
             'qris_merchant_name' => ['E-Wedu UMKM Magelang', Setting::TYPE_STRING, 'payment'],

@@ -117,33 +117,3 @@ Route::middleware(['auth', 'role:umkm'])->prefix('umkm-panel')->name('umkm.')->g
 
 require __DIR__.'/auth.php';
 
-Route::get('/cek-db', function () {
-    try {
-        $host = "gateway01.ap-southeast-1.prod.aws.tidbcloud.com";
-        $port = "4000";
-        $db   = "ewedu";
-        $user = "USERNAME_TIDB_LU"; // ganti username tidb lu
-        $pass = "PASSWORD_TIDB_LU"; // ganti password tidb lu
-        
-        $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
-        $options = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::MYSQL_ATTR_SSL_CA => '/etc/ssl/certs/ca-certificates.crt',
-            PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-        ];
-        
-        $pdo = new PDO($dsn, $user, $pass, $options);
-        $stmt = $pdo->query("SHOW TABLES");
-        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-        return response()->json([
-            'status' => 'BERHASIL TEMBUS KE TIDB!',
-            'tabel_di_tidb' => $tables
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'GAGAL KONEK KARENA INI',
-            'error' => $e->getMessage()
-        ], 500);
-    }
-});

@@ -44,11 +44,11 @@ return [
             'transaction_mode' => 'DEFERRED',
         ],
 
-        'mysql' => [
+       'mysql' => [
             'driver' => 'mysql',
             'url' => null,
             'host' => env('DB_HOST'),
-            'port' => env('DB_PORT', '4000'),
+            'port' => env('DB_PORT'),
             'database' => env('DB_DATABASE'),
             'username' => env('DB_USERNAME'),
             'password' => env('DB_PASSWORD'),
@@ -60,9 +60,8 @@ return [
             'options' => [
                 PDO::MYSQL_ATTR_SSL_CA => '/etc/ssl/certs/ca-certificates.crt',
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-            ],
-    ],
-
+                ],
+        ],
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL', env('DATABASE_URL')),

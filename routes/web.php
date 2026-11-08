@@ -116,3 +116,10 @@ Route::middleware(['auth', 'role:umkm'])->prefix('umkm-panel')->name('umkm.')->g
 
 
 require __DIR__.'/auth.php';
+
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/clear-cache-paksa', function () {
+    Artisan::call('optimize:clear');
+    return 'Cache aplikasi, config, dan route berhasil dibersihkan dari server!';
+});

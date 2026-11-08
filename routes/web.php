@@ -117,9 +117,23 @@ Route::middleware(['auth', 'role:umkm'])->prefix('umkm-panel')->name('umkm.')->g
 
 require __DIR__.'/auth.php';
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
 
-Route::get('/clear-cache-paksa', function () {
-    Artisan::call('optimize:clear');
-    return 'Cache aplikasi, config, dan route berhasil dibersihkan dari server!';
+Route::get('/cek-db', function () {
+    Artisan::call('optimize:clear'); // Sambil bersihkan cache lagi
+    
+    try {
+        $dbName = DB::connection()->getDatabaseName();
+        $tables = DB::select('SHOW TABLES');
+        
+        return response()->json([
+            'status' => 'Koneksi Berhasil!',
+            'database_yang_dibaca' => $dbName,
+            'jumlah_tabel_ditemukan' => count($tables),
+            'daftar_tabel' => $tables
+        ]);
+    } catch (\Exception $e) {
+        return "ERROR KONEKSI: " . $e->getMessage();
+    }
 });

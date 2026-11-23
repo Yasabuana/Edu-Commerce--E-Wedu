@@ -16,7 +16,7 @@
                     <p class="mt-2 text-sm text-gray-600">
                         Temukan berbagai produk unggulan dari UMKM Magelang.
                     </p>
-
+ 
                     {{-- Tombol aksi --}}
                     <div class="mt-6 flex flex-wrap items-center gap-4">
                         <a href="{{ route('products.index') }}"

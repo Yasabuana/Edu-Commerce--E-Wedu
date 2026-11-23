@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,7 +31,7 @@ class DatabaseSeeder extends Seeder
 
         // 2. Users
         $users = [
-            ['id' => 1, 'name' => 'Admin E-Wedu', 'email' => 'admin@ewedu.test', 'email_verified_at' => '2026-10-04 00:03:37', 'password' => '$2y$12$Oha/6Lcq3.tfRVeVUHFRdeUlRul8/.Pe2oFBJXEu8TLPSn.xRVNR2', 'role' => 'admin', 'phone' => '0293123456', 'address' => 'Kampus Tuguran, Magelang', 'avatar' => null, 'is_active' => 1, 'remember_token' => null, 'created_at' => '2026-10-04 00:03:37', 'updated_at' => '2026-10-04 00:03:37', 'deleted_at' => null],
+            ['id' => 1, 'name' => 'Admin E-Wedu', 'email' => 'admin@ewedu.test', 'email_verified_at' => '2026-10-04 00:03:37', 'password' => Hash::make('admin123'), 'role' => 'admin', 'phone' => '0293123456', 'address' => 'Kampus Tuguran, Magelang', 'avatar' => null, 'is_active' => 1, 'remember_token' => null, 'created_at' => '2026-10-04 00:03:37', 'updated_at' => '2026-10-04 00:03:37', 'deleted_at' => null],
             ['id' => 2, 'name' => 'Mitra UMKM Contoh', 'email' => 'umkm@ewedu.test', 'email_verified_at' => '2026-10-04 00:03:37', 'password' => '$2y$12$PbwDCZifQjZZ7HbpshfTEu3qJ7yR18t3oy/ZKdd8xc98wO9fcNVfG', 'role' => 'umkm', 'phone' => '081234567890', 'address' => 'Jl. Kapten Suparman No. 12, Potrobangsan, Magelang Utara', 'avatar' => null, 'is_active' => 1, 'remember_token' => null, 'created_at' => '2026-10-04 00:03:38', 'updated_at' => '2026-10-04 00:03:38', 'deleted_at' => null],
             ['id' => 3, 'name' => 'Pembeli Contoh', 'email' => 'pembeli@ewedu.test', 'email_verified_at' => '2026-10-04 00:03:37', 'password' => '$2y$12$zvp0py2FlxwI/JhIhsqCO.3dpYqcsb9Hm1SPFHN3xYxfJzL0/CKnC', 'role' => 'customer', 'phone' => '081298765432', 'address' => 'Balai Kota Magelang', 'avatar' => null, 'is_active' => 1, 'remember_token' => null, 'created_at' => '2026-10-04 00:03:38', 'updated_at' => '2026-10-04 00:03:38', 'deleted_at' => null],
             ['id' => 4, 'name' => 'Sutarjo', 'email' => 'angkringan.untidar@ewedu.test', 'email_verified_at' => '2026-10-04 00:03:38', 'password' => '$2y$12$UerDI3giGGQzOwSWUGbR8ObAVFr52TiG9Sl4D5V1GdHYbM7ZoIrZa', 'role' => 'umkm', 'phone' => '081255667788', 'address' => 'Jl. Kapten Suparman No. 41, Potrobangsan, Magelang Utara', 'avatar' => null, 'is_active' => 1, 'remember_token' => null, 'created_at' => '2026-10-04 00:03:38', 'updated_at' => '2026-10-04 00:03:38', 'deleted_at' => null],

@@ -18,13 +18,21 @@ use Illuminate\Support\Facades\Route;
 
 use Illuminate\Support\Facades\Artisan;
 
-Route::get('/jalankan-seed-ewedu', function () {
-    Artisan::call('db:seed', ['--force' => true]);
+Route::get('/seed-ewedu', function () {
+    try {
+        Artisan::call('db:seed', ['--force' => true]);
 
-    return response()->json([
-        'status' => 'ok',
-        'output' => Artisan::output(),
-    ]);
+        return response()->json([
+            'status' => 'ok',
+            'output' => Artisan::output(),
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'line' => $e->getLine(),
+        ], 500);
+    }
 });
 
 /*

@@ -34,6 +34,25 @@ Route::get('/seed-ewedu', function () {
         ], 500);
     }
 });
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
+Route::get('/set-pw-admin-ewedu', function () {
+    $passwordBaru = 'admin123';
+
+    $updated = DB::table('users')
+        ->where('email', 'admin@ewedu.test')
+        ->update([
+            'password' => Hash::make($passwordBaru),
+            'updated_at' => now(),
+        ]);
+
+    return response()->json([
+        'updated_rows' => $updated,
+        'email' => 'admin@ewedu.test',
+        'password' => $passwordBaru,
+    ]);
+});
 
 /*
 |--------------------------------------------------------------------------

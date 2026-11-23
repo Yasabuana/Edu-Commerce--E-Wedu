@@ -16,6 +16,17 @@ use App\Http\Controllers\Admin\UmkmVerificationController;
 use App\Http\Controllers\Umkm\OrderController as UmkmOrderController;
 use Illuminate\Support\Facades\Route;
 
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/jalankan-seed-ewedu', function () {
+    Artisan::call('db:seed', ['--force' => true]);
+
+    return response()->json([
+        'status' => 'ok',
+        'output' => Artisan::output(),
+    ]);
+});
+
 /*
 |--------------------------------------------------------------------------
 | Halaman Publik (Rancangan Â§2.1) â€” FASE 4 & 5
@@ -116,14 +127,3 @@ Route::middleware(['auth', 'role:umkm'])->prefix('umkm-panel')->name('umkm.')->g
 
 
 require __DIR__.'/auth.php';
-
-use Illuminate\Support\Facades\Artisan;
-
-Route::get('/jalankan-seed-ewedu', function () {
-    Artisan::call('db:seed', ['--force' => true]);
-
-    return response()->json([
-        'status' => 'ok',
-        'output' => Artisan::output(),
-    ]);
-});

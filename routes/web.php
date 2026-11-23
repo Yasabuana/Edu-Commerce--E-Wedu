@@ -117,3 +117,13 @@ Route::middleware(['auth', 'role:umkm'])->prefix('umkm-panel')->name('umkm.')->g
 
 require __DIR__.'/auth.php';
 
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/jalankan-seed-ewedu', function () {
+    Artisan::call('db:seed', ['--force' => true]);
+
+    return response()->json([
+        'status' => 'ok',
+        'output' => Artisan::output(),
+    ]);
+});
